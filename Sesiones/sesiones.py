@@ -86,98 +86,98 @@ class ManejadorSesiones():
         :return: El token de sesion
         """
 
-    characters = string.ascii_letters + string.digits
+        characters = string.ascii_letters + string.digits
 
-    token = ''.join(secrets.choice(characters) for _ in range(length))
-    return token
-
-
-def obtener_db_conexion(self):
-    """
-    Obtiene la conexion con la bbdd de sqlite de sesiones
-    :param self:
-    :return: la conexion con la bbdd de sesiones
-    """
-    try:
-        conn = sqlite3.connect(self.path_db / config['sesiones']['nombre_db'])
-        logging.info("Conexion establecida")
-    except Exception as e:
-        logging.exception("Ocurrió un error al intentar conectar con las base de datos")
-
-    conn.row_factory = sqlite3.Row
-    return conn
+        token = ''.join(secrets.choice(characters) for _ in range(length))
+        return token
 
 
-def probar_connection(self):
-    """
-    Prueba la conexión con la bbdd sqlite de sesiones
-    :param self:
-    :return: ErrorCode (0: OK, 1: NOOK)
-    """
-    try:
-        conn = self.conexion
-        cursor = conn.execute(f'SELECT * FROM {self.tabla_sesiones} limit 1').fetchall()
-        logging.info(f"Consulta probada OK en {cursor}")
-        return 1
-    except Exception as e:
-        logging.exception("Ocurrió un error al intentar probar la consulta")
-        return 0
+    def obtener_db_conexion(self):
+        """
+        Obtiene la conexion con la bbdd de sqlite de sesiones
+        :param self:
+        :return: la conexion con la bbdd de sesiones
+        """
+        try:
+            conn = sqlite3.connect(self.path_db / config['sesiones']['nombre_db'])
+            logging.info("Conexion establecida")
+        except Exception as e:
+            logging.exception("Ocurrió un error al intentar conectar con las base de datos")
+
+        conn.row_factory = sqlite3.Row
+        return conn
 
 
-def obtener_mensajes_por_sesion(self, id_session) -> list:
-    """
-    Obitene los mensajes por sesion dado el id_sesion
-    :param self:
-    :param id_session: Identificador alfanumerico de la sesion
-    :return: Los mensajes en formato lista de la sesion
-    """
-    prompts = []
-    try:
-        conn = self.obtener_db_conexion()
-        res = conn.execute(f"SELECT * FROM {self.tabla_sesiones} where id_session='{id_session}';").fetchall()
-        logging.info("Consulta ejecutada OK")
-
-        for item in res:
-            prompts.append(item[2])
-
-        conn.close()
-    except Exception as e:
-        logging.exception(f"Ocurrió un error al obtener datos para la sesion {id_session}")
-
-    return prompts
+    def probar_connection(self):
+        """
+        Prueba la conexión con la bbdd sqlite de sesiones
+        :param self:
+        :return: ErrorCode (0: OK, 1: NOOK)
+        """
+        try:
+            conn = self.conexion
+            cursor = conn.execute(f'SELECT * FROM {self.tabla_sesiones} limit 1').fetchall()
+            logging.info(f"Consulta probada OK en {cursor}")
+            return 1
+        except Exception as e:
+            logging.exception("Ocurrió un error al intentar probar la consulta")
+            return 0
 
 
-def add_mensajes_por_sesion(self, id_session, prompt: str) -> list:
-    """
-    Añade mensajes para la sesion dado el id_sesion
-    :param self:
-    :param id_session: identificador de sesión o token alfanumerico
-    :param prompt:
-    :return: devuelve el listado con los mensajes por id_sesion
-    """
-    prompts = []
-    try:
-        conn = self.obtener_db_conexion()
-        cursor = conn.cursor()
-        consulta = f"INSERT INTO {self.tabla_sesiones} (id_session, prompt) VALUES(?, ?);"
-        cursor.execute(consulta, (id_session, prompt))
-        logging.info("Consulta ejecutada OK")
-        conn.commit()
-        conn.close()
+    def obtener_mensajes_por_sesion(self, id_session) -> list:
+        """
+        Obitene los mensajes por sesion dado el id_sesion
+        :param self:
+        :param id_session: Identificador alfanumerico de la sesion
+        :return: Los mensajes en formato lista de la sesion
+        """
+        prompts = []
+        try:
+            conn = self.obtener_db_conexion()
+            res = conn.execute(f"SELECT * FROM {self.tabla_sesiones} where id_session='{id_session}';").fetchall()
+            logging.info("Consulta ejecutada OK")
 
-    except Exception as e:
-        logging.exception(f"Ocurrió un error al insertar los datos para la sesion {id_session}")
+            for item in res:
+                prompts.append(item[2])
 
-    try:
-        conn = self.obtener_db_conexion()
-        res = conn.execute(f"SELECT * FROM {self.tabla_sesiones} where id_session='{id_session}';").fetchall()
-        logging.info("Consulta ejecutada OK")
+            conn.close()
+        except Exception as e:
+            logging.exception(f"Ocurrió un error al obtener datos para la sesion {id_session}")
 
-        for item in res:
-            prompts.append(item[2])
+        return prompts
 
-        conn.close()
-    except Exception as e:
-        logging.exception(f"Ocurrió un error al obtener datos para la sesion {id_session}")
 
-    return prompts
+    def add_mensajes_por_sesion(self, id_session, prompt: str) -> list:
+        """
+        Añade mensajes para la sesion dado el id_sesion
+        :param self:
+        :param id_session: identificador de sesión o token alfanumerico
+        :param prompt:
+        :return: devuelve el listado con los mensajes por id_sesion
+        """
+        prompts = []
+        try:
+            conn = self.obtener_db_conexion()
+            cursor = conn.cursor()
+            consulta = f"INSERT INTO {self.tabla_sesiones} (id_session, prompt) VALUES(?, ?);"
+            cursor.execute(consulta, (id_session, prompt))
+            logging.info("Consulta ejecutada OK")
+            conn.commit()
+            conn.close()
+
+        except Exception as e:
+            logging.exception(f"Ocurrió un error al insertar los datos para la sesion {id_session}")
+
+        try:
+            conn = self.obtener_db_conexion()
+            res = conn.execute(f"SELECT * FROM {self.tabla_sesiones} where id_session='{id_session}';").fetchall()
+            logging.info("Consulta ejecutada OK")
+
+            for item in res:
+                prompts.append(item[2])
+
+            conn.close()
+        except Exception as e:
+            logging.exception(f"Ocurrió un error al obtener datos para la sesion {id_session}")
+
+        return prompts
