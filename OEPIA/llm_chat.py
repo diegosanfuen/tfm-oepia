@@ -406,32 +406,29 @@ def interactuar_con_llm(texto, historial_previo):
 
 # Esta función podría contener la lógica de postprocesamiento
 def procesar_respuesta(respuesta):
+    """
+     Procesa la respuesta recibida, realizando ajustes o transformaciones antes de su uso posterior.
+
+     Esta función está destinada a ser un lugar para realizar cualquier manipulación necesaria
+     de la respuesta antes de mostrarla o procesarla más en el programa. Actualmente, la función
+     limpia el valor de un campo de entrada después de recibir la respuesta, pero podría
+     extenderse para incluir más lógica según sea necesario.
+
+     Args:
+         respuesta (str): La respuesta obtenida que necesita ser procesada.
+
+     Returns:
+         str: La respuesta procesada, que en este caso es la misma que la entrada.
+
+     Ejemplo:
+         >>> procesar_respuesta("Hola, mundo!")
+         'Hola, mundo!'
+
+     Nota:
+         `texto_entrada.value = ""` parece indicar que hay un campo de entrada (posiblemente en una interfaz gráfica)
+         que se limpia cada vez que se procesa una respuesta. Esto sugiere que la función está vinculada
+         a la lógica de la interfaz de usuario donde `texto_entrada` es un widget o componente interactivo.
      """
-      Procesa la respuesta recibida, realizando ajustes o transformaciones antes de su uso posterior.
-
-      Esta función está destinada a ser un lugar para realizar cualquier manipulación necesaria
-      de la respuesta antes de mostrarla o procesarla más en el programa. Actualmente, la función
-      limpia el valor de un campo de entrada después de recibir la respuesta, pero podría
-      extenderse para incluir más lógica según sea necesario.
-
-      Args:
-          respuesta (str): La respuesta obtenida que necesita ser procesada.
-
-      Returns:
-          str: La respuesta procesada, que en este caso es la misma que la entrada.
-
-      Ejemplo:
-          >>> procesar_respuesta("Hola, mundo!")
-          'Hola, mundo!'
-
-      Nota:
-          `texto_entrada.value = ""` parece indicar que hay un campo de entrada (posiblemente en una interfaz gráfica)
-          que se limpia cada vez que se procesa una respuesta. Esto sugiere que la función está vinculada
-          a la lógica de la interfaz de usuario donde `texto_entrada` es un widget o componente interactivo.
-      """
-
-    # Implementa aquí cualquier ajuste o transformación necesaria
-    texto_entrada.value = ""
     return respuesta
 
 
