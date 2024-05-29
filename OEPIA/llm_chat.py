@@ -28,8 +28,8 @@ load_dotenv()  # Realizamos la carga de las variables de ambiente
 os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
 
 sys.path.insert(0, os.environ['PROJECT_ROOT'])
-from SesionesCollab.sesiones import ManejadorSesiones as ses
-from FaissOPEIACollab import carga as fcg
+from Sesiones.sesiones import ManejadorSesiones as ses
+from FaissOPEIA import carga as fcg
 from OEPIA.Utiles import Prompts as prompts
 from OEPIA.Utiles import Utiles as utls
 
