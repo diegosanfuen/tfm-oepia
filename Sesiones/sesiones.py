@@ -12,7 +12,7 @@ os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
 sys.path.insert(0, os.environ['PROJECT_ROOT'])
 
 # Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config_collab.yml', 'r') as file:
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
     config = yaml.safe_load(file)
 
 PATH_BASE = Path(config['ruta_base'])
