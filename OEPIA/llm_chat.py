@@ -283,6 +283,7 @@ def chat(pregunta):
     """
 
     global token
+    answer = ""
     if ("<resetea_sesion>" in pregunta.lower()):
         token = generate_token()
         answer = "Sesión reseteada"
@@ -299,6 +300,7 @@ def chat(pregunta):
             logger.info(str(str))
         except Exception as e:
             logger.error(f'Un Error se produjo al intentar invocar el LLM: {e}')
+            exit
 
     else:
         try:
@@ -310,6 +312,7 @@ def chat(pregunta):
             logger.info(str(str))
         except Exception as e:
             logger.error(f'Un Error se produjo al intentar invocar el LLM: {e}')
+            exit
 
     return answer
 
