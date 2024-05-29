@@ -3,4 +3,4 @@ Inicializa el paquete Sesiones
 """
 nombre_paquete = "Sesiones"
 
-from SesionesCollab.sesiones import ManejadorSesiones
+from Sesiones.sesiones import ManejadorSesiones
