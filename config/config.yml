@@ -1,0 +1,73 @@
+# Ruta base
+ruta_base: "/content/tfm-oepia"
+
+# Configuracion de los Logs
+logs_config:
+  ruta_salida_logs: "Logs"
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  level: "DEBUG"
+
+# Configuracion de la Base de Datos de Mensajes (Contexto)
+sesiones:
+  ruta: "Sesiones"
+  ruta_db: "datos"
+  nombre_db: "sesiones.sqlite"
+  tabla: "sesiones"
+
+# Configuracion de Base de Datos Vectorial
+vectorial_database:
+  ruta: "FaissOPEIA"
+  serialized_database: "db"
+  file_retriever: "retriever.pkl"
+  file_vector_index: "bbdd_vecrtorial.pkl"
+  parameters_tokenizador:
+    name_model_llm: llama3
+    name_model_tokenizador: llama3
+    return_tensors: pt
+    max_length: 512
+    truncation: true
+    padding: max_length
+    temperature: 0.0
+
+# WebScrapping
+scrapping:
+  ruta: "ObtencionDatos"
+  descarga_datos: "datos"
+  dataset_index:
+    campos_metadata:
+      - url
+      - titulo
+      - texto
+    campo_texto:
+      - resumen
+  fuentes:
+    BOE:
+      url: "https://www.boe.es/"
+      patron: "https://www.boe.es/boe/dias/$anio/$mes/$dia/index.php?s=2B"
+      fichero_csv: "csv_boes_oferta_publica.csv"
+    BOCYL:
+      url: "https://bocyl.jcyl.es/"
+      patron: "https://bocyl.jcyl.es/boletin.do?fechaBoletin=$dia/$mes/$anio#I.B._AUTORIDADES_Y_PERSONAL"
+      fichero_csv: "csv_bocyls_oferta_publica.csv"
+    limitacion_descargas: 100
+    tiempo_entre_descargas: 1
+    separador: "|"
+  headers:
+    accept: "application/xml;q=0.9, */*;q=0.8"
+  timeout: 10
+  n_sentences_summary: 4
+
+
+# Modelo LLM principal
+llm_oepia:
+  ruta: "OEPIA"
+  parameters_modelo:
+    llm_model: llama3
+    temperature: 0.0
+    nombre_asistente: "OPEIA"
+
+
+# Agentes
+agentePDF:
+  ruta: "AgentePDF"
+
