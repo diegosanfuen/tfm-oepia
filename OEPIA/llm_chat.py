@@ -25,7 +25,7 @@ from langchain.agents import AgentExecutor
 
 load_dotenv()  # Realizamos la carga de las variables de ambiente
 # Introducir esta variable de entorno en el lanzador
-os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
+os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
 
 sys.path.insert(0, os.environ['PROJECT_ROOT'])
 from Sesiones.sesiones import ManejadorSesiones as ses
