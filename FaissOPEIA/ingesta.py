@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="huggingface_hu
 warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub.file_download")
 
 # Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config_collab.yml', 'r') as file:
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
     config = yaml.safe_load(file)
 
 PATH_BASE = Path(config['ruta_base'])
