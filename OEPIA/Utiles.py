@@ -4,9 +4,16 @@ import io
 
 
 class Prompts:
+    """
+    Clase con métodos Helper que facilitan los prompts al script principal del LLM
+    """
 
     @staticmethod
     def obtenerPROMPTTemplatePrincipalOEPIA():
+        """
+        Método estatico que devuelve el PROMPT al script principal del LLM
+        :return: SystemPrompt para el LLM principal
+        """
         return """
             Te llamas OEPIA, y eres un asistente chat, tienes las siguientes misiones importantes:            
             * Ayudar al usuario para encontrar las mejores ofertas de empleo público que coincidan con mi perfil. pero para ello tienes acceso a una base de datos provista por FAISS.
@@ -31,8 +38,16 @@ class Prompts:
 
 
 class Utiles:
+    """
+    Clase utilities o herramientas necesarias para la ejecución del script principal del LLM
+    """
+
     @staticmethod
     def obtenerPROMPTTemplatePrincipalOEPIA():
+        """
+        Método estatico que devuelve el PROMPT al script principal del LLM
+        :return:
+        """
         return """
             Te llamas OEPIA, y eres un asistente chat, tienes las siguientes misiones importantes:            
             * Ayudar al usuario para encontrar las mejores ofertas de empleo público que coincidan con mi perfil. pero para ello tienes acceso a una base de datos provista por FAISS.
@@ -53,6 +68,10 @@ class Utiles:
 
     @staticmethod
     def obtenerCSSOEPIAInterfaz():
+        """
+        Método estático que devuelve la página de estilos para el interfaz de OEPIA será usado por Gradio
+        :return:
+        """
         return """
             <style>
                 .gr-textbox { 
@@ -91,8 +110,14 @@ class Utiles:
             
             </style>
     """
+
     @staticmethod
     def obtener_boe_texto(url):
+        """
+        Método estático que es la herramienta a la que llama el AgentePDF utilzando en el script principal del LLM
+        :param url: La url del PDF a parsear
+        :return: Texto completo del PDF
+        """
         response = requests.get(url)
 
         # Asegurarse de que la solicitud fue exitosa
@@ -106,4 +131,3 @@ class Utiles:
         else:
             print("Error al descargar el archivo")
         return text
-

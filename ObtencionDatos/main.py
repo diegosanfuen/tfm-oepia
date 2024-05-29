@@ -1,14 +1,19 @@
-# Rutina principal
+"""
+Script principal que descarga via configuración el contenido del BOE y del BOCYL y lo deja accesible por el ingestador de FAISS
+"""
+
+# Importamos librerias
 from DescargaBOE import DescargaBOE
 from DescargaBOCyL import DescargaBOCyL
 import os, datetime
 import time, logging, yaml
 from pathlib import Path
 
-os.environ['PROJECT_ROOT'] = r'/content/recuperacion_informacion_modelos_lenguaje/tfm'
+# Clase principal
+os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
 
 # Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config_collab.yml', 'r') as file:
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
     config = yaml.safe_load(file)
 
 PATH_BASE = Path(config['ruta_base'])
@@ -35,7 +40,6 @@ logging.basicConfig(filename=PATH_BASE / config['logs_config']['ruta_salida_logs
 
 # Creamos el logger
 logger = logging.getLogger()
-
 
 BOCyL = DescargaBOCyL()
 BOCyL.initialize_download()

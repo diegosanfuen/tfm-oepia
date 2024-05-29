@@ -1,6 +1,6 @@
-# Definimos una variable
-nombre_paquete = "AgentePDFCollab"
+"""
+Inicializa el paquete Especifico para el manejo del AgentePDF
+"""
+nombre_paquete = "AgentePDF"
 
-# Importamos los módulos que queremos que estén disponibles
-from AgentePDF.TransformaURLPDFTexto  import TransformaURLPDFTexto
-
+from AgentePDF.TransformaURLPDFTexto import TransformaURLPDFTexto

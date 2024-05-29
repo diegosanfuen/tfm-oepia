@@ -7,8 +7,6 @@ from urllib.parse import urlparse, urlunparse
 import re
 from pathlib import Path
 import logging, os, yaml, time
-import nltk
-
 
 # Continuar con el resto de tu código de sumy después de esta descarga
 from sumy.parsers.plaintext import PlaintextParser
@@ -21,10 +19,10 @@ from sumy.utils import get_stop_words
 language = "spanish"
 
 # Introducir esta variable de entorno en el lanzador
-os.environ['PROJECT_ROOT'] = r'/content/recuperacion_informacion_modelos_lenguaje/tfm'
+os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
 
 # Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config_collab.yml', 'r') as file:
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
     config = yaml.safe_load(file)
 
 PATH_BASE = Path(config['ruta_base'])
@@ -52,6 +50,7 @@ logging.basicConfig(filename=PATH_BASE / config['logs_config']['ruta_salida_logs
 # Creamos el logger
 logger = logging.getLogger()
 
+
 class DescargaBOCyL:
     """
     Clase que permite la descarga del BOCyL en lo referente a las Resoluciones relacionadas con las convocatorias de Oposiciones
@@ -61,7 +60,6 @@ class DescargaBOCyL:
     MiClase.establecer_offset(offset)
     """
 
-    
     def __init__(self):
         """
         Generador de la clase no recibe parámetros
@@ -72,9 +70,9 @@ class DescargaBOCyL:
         self.fecha_actual = datetime.datetime.now()
         self.url_patron = string.Template(config['scrapping']['fuentes']['BOCYL']['patron'])
         self.dominio = config['scrapping']['fuentes']['BOCYL']['url']
-        self.dataset_bocyls = pd.DataFrame({'url':[], 
-                                          'titulo':[],
-                                          'texto':[]})
+        self.dataset_bocyls = pd.DataFrame({'url': [],
+                                            'titulo': [],
+                                            'texto': []})
         logger.info("-------------------------------------------------------------------------------------")
         logger.info("-----------------------------------OBTENCION DE DATOS BOCYL-----------------------------")
         logger.info("-------------------------------------------------------------------------------------")
@@ -104,7 +102,7 @@ class DescargaBOCyL:
         self.quitar_etiquetas_html(Texto)
         """
         # Parsear la cadena HTML
-        soup = BeautifulSoup(cadena_html, 'html.parser')    
+        soup = BeautifulSoup(cadena_html, 'html.parser')
         # Obtener solo el texto sin etiquetas HTML
         texto = soup.get_text(separator='')
         texto = texto.replace('[', '')
@@ -150,18 +148,16 @@ class DescargaBOCyL:
         Entrada: Offset Es un entero
         Salida: Variables internas de la clase (URLS de los BOES)
         """
-        fecha_calculada = self.fecha_actual - datetime.timedelta(days=offset)      
+        fecha_calculada = self.fecha_actual - datetime.timedelta(days=offset)
         anio = fecha_calculada.year
         mes = str(fecha_calculada.month).zfill(2)
         dia = str(fecha_calculada.day).zfill(2)
         fecha = {'anio': anio,
                  'mes': mes,
-                 'dia': dia}        
+                 'dia': dia}
         self.url_busqueda = self.url_patron.substitute(anio=fecha['anio'],
                                                        mes=fecha['mes'],
-                                                       dia=fecha['dia'])       
-
-
+                                                       dia=fecha['dia'])
 
     def buscar_urls_xmls(self):
         """
@@ -171,47 +167,46 @@ class DescargaBOCyL:
         Uso
         self.buscar_urls_xmls()
         """
-        
+
         url = self.url_busqueda
-        parsed_url = urlparse(url)        
-        
-        dominio = parsed_url.netloc                
-        
+        parsed_url = urlparse(url)
+
+        dominio = parsed_url.netloc
+
         response = requests.get(url)
-        html_content = response.content        
-        
-        soup = BeautifulSoup(html_content, 'html.parser')       
-        
+        html_content = response.content
+
+        soup = BeautifulSoup(html_content, 'html.parser')
+
         regex = re.compile(".*otros formatos.*")
-               
+
         enlaces_con_titulo = []
         for enlace in soup.find_all('a'):
             if regex.search(str(enlace)):
                 enlaces_con_titulo.append(enlace)
-        
+
         lista_urls = []
         for enlace in enlaces_con_titulo:
             # Realizamos una serie de transformaciones a la URL
             href_transformado = str(enlace["href"]).replace(
                 'html', 'xml').replace(
                 'do', 'xml')
-            
+
             url_obtenida = f'https://{dominio}/{href_transformado}'
 
             parsed_url = urlparse(url_obtenida)
-    
+
             parsed_url_lista = list(parsed_url)
             path_url = parsed_url_lista[2].split('/')
             path_url[1] = 'boletines'
             parsed_url_lista[2] = "/".join(path_url)
-        
+
             # Convertir la lista de nuevo a un objeto ParseResult
             parsed_url_modificada = urlparse(urlunparse(parsed_url_lista))
             url_obtenida = urlunparse(parsed_url_modificada)
             lista_urls.append(url_obtenida)
-        
+
         self.lista_urls = lista_urls
-        
 
     def obtener_lista_xmls(self):
         """
@@ -223,7 +218,7 @@ class DescargaBOCyL:
         """
         lista_respuestas = []
         for url in self.lista_urls:
-            #url = 'https://bocyl.jcyl.es/boletines/2024/04/29/xml/BOCYL-D-29042024-1.xml'
+            # url = 'https://bocyl.jcyl.es/boletines/2024/04/29/xml/BOCYL-D-29042024-1.xml'
             try:
                 response = requests.get(url, headers=self.headers, timeout=self.timeout)
             except requests.exceptions.ConnectTimeout:
@@ -231,8 +226,7 @@ class DescargaBOCyL:
 
             lista_respuestas.append(response.text)
         self.lista_xmls = lista_respuestas
-    
-    
+
     def obtener_lista_titulos(self):
         """
         Con los parámetros obtenidos de establecer_offset, localizamos los titulos
@@ -247,8 +241,7 @@ class DescargaBOCyL:
             titulo = soup.find("titulo")
             lista_titulos.append(titulo.get_text())
         self.lista_titulos = lista_titulos
-        
-    
+
     def obtener_lista_textos(self):
         """
         Con los parámetros obtenidos de establecer_offset, localizamos los textos
@@ -260,12 +253,10 @@ class DescargaBOCyL:
         lista_textos = []
         for XML in self.lista_xmls:
             textos = ""
-            soup = BeautifulSoup(XML, "xml") 
-            text = soup.find_all("texto")           
+            soup = BeautifulSoup(XML, "xml")
+            text = soup.find_all("texto")
             lista_textos.append(str(text))
         self.lista_textos = lista_textos
-
-    
 
     def obtener_lista_urls_pdf(self):
         """
@@ -278,11 +269,10 @@ class DescargaBOCyL:
         lista_urls_pdf = []
         for XML in self.lista_xmls:
             textos = ""
-            soup = BeautifulSoup(XML, "xml") 
-            url_pdf = soup.find_all("url_pdf")           
+            soup = BeautifulSoup(XML, "xml")
+            url_pdf = soup.find_all("url_pdf")
             lista_urls_pdf.append(f'{self.dominio}{str(self.quitar_etiquetas_html(str(url_pdf)))}')
         self.lista_urls_pdf = lista_urls_pdf
-
 
     def generar_dataset(self) -> int:
         """
@@ -298,9 +288,9 @@ class DescargaBOCyL:
         self.obtener_lista_titulos()
         self.obtener_lista_textos()
         self.obtener_lista_urls_pdf()
-        dataset_capturado = pd.DataFrame({'url':self.lista_urls_pdf, 
-                                          'titulo':self.lista_titulos,
-                                          'texto':self.lista_textos})
+        dataset_capturado = pd.DataFrame({'url': self.lista_urls_pdf,
+                                          'titulo': self.lista_titulos,
+                                          'texto': self.lista_textos})
 
         dataset_capturado['texto'] = dataset_capturado['texto'].apply(self.quitar_etiquetas_html)
         dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_resumen)
@@ -312,13 +302,12 @@ class DescargaBOCyL:
         self.dataset_bocyls = pd.concat([self.dataset_bocyls, dataset_capturado], ignore_index=True)
         return self.dataset_bocyls.shape[0]
 
-
     def obtener_dataset_final(self):
         """
         Finalmente devolvemos a la rutina principal el contenido del dataset completo
         MiClase.obtener_dataset_final()
         Salida: Dataset Completo
-        """        
+        """
         return self.dataset_bocyls
 
     def guardar_dataset_final(self):
@@ -348,6 +337,3 @@ class DescargaBOCyL:
             time.sleep(self.time_wait)
             i += 1
         self.guardar_dataset_final()
-
-
-

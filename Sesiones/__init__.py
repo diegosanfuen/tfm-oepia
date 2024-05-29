@@ -1,5 +1,6 @@
-# Definimos una variable
-nombre_paquete = "SesionesCollab"
+"""
+Inicializa el paquete Sesiones
+"""
+nombre_paquete = "Sesiones"
 
-# Importamos los módulos que queremos que estén disponibles
 from SesionesCollab.sesiones import ManejadorSesiones

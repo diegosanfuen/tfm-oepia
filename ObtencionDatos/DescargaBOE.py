@@ -9,7 +9,6 @@ from pathlib import Path
 import logging, os, yaml, time
 import nltk
 
-
 # Continuar con el resto de tu código de sumy después de esta descarga
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
@@ -20,10 +19,10 @@ from sumy.utils import get_stop_words
 # Idioma del texto
 language = "spanish"
 
-os.environ['PROJECT_ROOT'] = r'/content/recuperacion_informacion_modelos_lenguaje/tfm'
+os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
 
 # Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config_collab.yml', 'r') as file:
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
     config = yaml.safe_load(file)
 
 PATH_BASE = Path(config['ruta_base'])
@@ -51,6 +50,7 @@ logging.basicConfig(filename=PATH_BASE / config['logs_config']['ruta_salida_logs
 # Creamos el logger
 logger = logging.getLogger()
 
+
 class DescargaBOE:
     """
     Clase que permite la descarga del BOE en lo referente a las Resoluciones relacionadas con las convocatorias de Oposiciones
@@ -70,9 +70,9 @@ class DescargaBOE:
         self.fecha_actual = datetime.datetime.now()
         self.url_patron = string.Template(config['scrapping']['fuentes']['BOE']['patron'])
         self.dominio = config['scrapping']['fuentes']['BOE']['url']
-        self.dataset_boes = pd.DataFrame({'url':[],
-                                          'titulo':[],
-                                          'texto':[]})
+        self.dataset_boes = pd.DataFrame({'url': [],
+                                          'titulo': [],
+                                          'texto': []})
         logger.info("-------------------------------------------------------------------------------------")
         logger.info("-----------------------------------OBTENCION DE DATOS BOCYL-----------------------------")
         logger.info("-------------------------------------------------------------------------------------")
@@ -282,14 +282,12 @@ class DescargaBOE:
         dataset_capturado['texto'] = dataset_capturado['texto'].apply(self.quitar_etiquetas_html)
         dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_resumen)
         texto_separador = "\nURL: "
-        dataset_capturado['resumen'] = dataset_capturado.apply(lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
+        dataset_capturado['resumen'] = dataset_capturado.apply(
+            lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
         dataset_capturado.drop('resumenW', axis=1, inplace=True)
 
         self.dataset_boes = pd.concat([self.dataset_boes, dataset_capturado], ignore_index=True)
         return self.dataset_boes.shape[0]
-
-
-
 
     def obtener_dataset_final(self):
         """
