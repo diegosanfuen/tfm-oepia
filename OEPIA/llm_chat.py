@@ -264,7 +264,7 @@ agent_executor = AgentExecutor.from_agent_and_tools(
 llmApp = retrieval_chain | agent_executor
 
 
-def chat(pregunta)
+def chat(pregunta):
     """
     Procesa una pregunta de entrada y devuelve una respuesta basada en diferentes comandos y el contexto de la sesión.
 
@@ -437,7 +437,7 @@ def procesar_respuesta(respuesta):
 
 def procesar_flag(texto_entrada: str,
                   flag_option: str,
-                  flag_index: str):
+                  flag_index: int):
     """
     Procesa y registra la marcación de un dato específico con un flag correspondiente a una opción seleccionada.
 
