@@ -7,7 +7,7 @@ from urllib.parse import urlparse, urlunparse
 import re
 from pathlib import Path
 import logging, os, yaml, time
-import nltk
+import warnings
 
 # Continuar con el resto de tu código de sumy después de esta descarga
 from sumy.parsers.plaintext import PlaintextParser
@@ -126,8 +126,11 @@ class DescargaBOE:
         summarizer = Summarizer(stemmer)
         summarizer.stop_words = get_stop_words(language)
 
-        # Generar el resumen
-        summary = summarizer(parser.document, self.num_sentences)
+        try:
+            # Generar el resumen
+            summary = summarizer(parser.document, self.num_sentences)
+        except Exception as e:
+            logger.error(f"Hubo un problema al realizar el resumen {e}")
 
         texto_resumido = ""
         for sentence in summary:
@@ -206,11 +209,10 @@ class DescargaBOE:
         """
         lista_respuestas = []
         for url in self.lista_urls:
-            # url = 'https://www.boe.es/diario_boe/xml.php?id=BOE-A-2021-10344'
             try:
                 response = requests.get(url, headers=self.headers, timeout=self.timeout)
-            except requests.exceptions.ConnectTimeout:
-                print("La conexión ha excedido el tiempo máximo de espera.")
+            except requests.exceptions.ConnectTimeout as e:
+                logger.error(f"La conexión ha excedido el tiempo máximo de espera. {e}")
 
             lista_respuestas.append(response.text)
         self.lista_xmls = lista_respuestas

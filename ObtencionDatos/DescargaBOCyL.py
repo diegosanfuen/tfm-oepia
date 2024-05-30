@@ -7,6 +7,7 @@ from urllib.parse import urlparse, urlunparse
 import re
 from pathlib import Path
 import logging, os, yaml, time
+import warnings
 
 # Continuar con el resto de tu código de sumy después de esta descarga
 from sumy.parsers.plaintext import PlaintextParser
@@ -126,8 +127,11 @@ class DescargaBOCyL:
         summarizer = Summarizer(stemmer)
         summarizer.stop_words = get_stop_words(language)
 
-        # Generar el resumen
-        summary = summarizer(parser.document, self.num_sentences)
+        try:
+            # Generar el resumen
+            summary = summarizer(parser.document, self.num_sentences)
+        except Exception as e:
+            logger.error(f"Hubo un problema al realizar el resumen {e}")
 
         texto_resumido = ""
         for sentence in summary:
@@ -221,8 +225,8 @@ class DescargaBOCyL:
             # url = 'https://bocyl.jcyl.es/boletines/2024/04/29/xml/BOCYL-D-29042024-1.xml'
             try:
                 response = requests.get(url, headers=self.headers, timeout=self.timeout)
-            except requests.exceptions.ConnectTimeout:
-                print("La conexión ha excedido el tiempo máximo de espera.")
+            except requests.exceptions.ConnectTimeout as e:
+                logger.error(f"La conexión ha excedido el tiempo máximo de espera. {e}")
 
             lista_respuestas.append(response.text)
         self.lista_xmls = lista_respuestas
