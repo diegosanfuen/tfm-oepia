@@ -472,11 +472,11 @@ iface = gr.Interface(
     fn=interactuar_con_llm,
     inputs=[texto_entrada, historial_previo],
     outputs=gr.Markdown(label="Historial de la conversación"),
-    title=f"<img src =\"{PATH_BASE}/statics/logo.png\" />OEPIA: La IA especializada en ofertas de Empleo Público",
+    title="<img src ='https://diegosanfuen.github.io/staticsTFM/logo/logo.png' />OEPIA: La IA especializada en ofertas de Empleo Público",
     description="Escribe un mensaje y presiona 'Submit' para interactuar con el modelo de lenguaje.",
     live=False,  # Desactiva la actualización en tiempo real
     css=CSS,
-    article="Explicacion del proyecto",
+    article=utls.obtener_ayuda_oepia(),
     thumbnail=True,
     allow_flagging="manual",  # Permite marcar manualmente las entradas
     flagging_options=["Incorrecto", "Irrelevante", "Ofensivo"],  # Opciones para el usuario al marcar

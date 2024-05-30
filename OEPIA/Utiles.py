@@ -131,3 +131,25 @@ class Utiles:
         else:
             print("Error al descargar el archivo")
         return text
+
+    @staticmethod
+    def obtener_ayuda_oepia():
+        """
+        Método estático que devuelve el codigo HTML estático que ayuda a manejar OEPIA
+        :param
+        :return: HTML de ayuda
+        """
+        MARKDOWN =
+        """
+        ## Manejo de OEPIA:
+
+### Uso basico:
+Escribe frases que indiequen a OEPIA que quieres localizar como por ejemmplo:
+- Buscame las ofertas de empleo público que tengan que ver con la profesión de arquitecto
+- Localiza todas las ofertas de empleo público de médico y me las presentas en formato json indicando la url.
+
+### Metafunciones
+- <resetear_sesion>: Resetea a OEPIA es como si volviese a conocerte
+- <ver_historial>: OEPIA te muestra todo lo que ha conversado contigo
+        """
+        return MARKDOWN
