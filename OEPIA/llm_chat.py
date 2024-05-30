@@ -472,7 +472,7 @@ iface = gr.Interface(
     fn=interactuar_con_llm,
     inputs=[texto_entrada, historial_previo],
     outputs=gr.Markdown(label="Historial de la conversación"),
-    title="OEPIA: La IA especializada en ofertas de Empleo Público",
+    title=f"<img src =\"{PATH_BASE}/statics/logo.png\" />OEPIA: La IA especializada en ofertas de Empleo Público",
     description="Escribe un mensaje y presiona 'Submit' para interactuar con el modelo de lenguaje.",
     live=False,  # Desactiva la actualización en tiempo real
     css=CSS,
