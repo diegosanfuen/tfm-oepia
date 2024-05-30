@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
-pip install langchain
-pip install langchain-core
-pip install langchain-community
-pip install langchain_text_splitters
-pip install faiss-gpu
-pip install python-dotenv
-pip install gradio
-pip install langchainhub
-pip install pdfplumber
-pip install sumy
+# SCRIPT PARA INSTALAR LOS REQUERIMENTS DEL PROYECTO
+
+# Cargamos variables de entorno
+export PROJECT_ROOT=/content/tfm-oepia
+export HF_HUB_DISABLE_SYMLINKS_WARNING=1
+export KMP_DUPLICATE_LIB_OK=TRUE
+export PYTHONUNBUFFERED=1
+
+pip install -r $PROJECT_ROOT/scripts/requirements.txt
+
+
 

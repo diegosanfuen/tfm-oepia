@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # SCRIPT PARA LA EJECUCION DEL INTERFACE DE OPEIA
+
 # Cargamos variables de entorno
 export PROJECT_ROOT=/content/tfm-oepia
 export HF_HUB_DISABLE_SYMLINKS_WARNING=1
