@@ -14,4 +14,4 @@ seleep 15
 ollama pull llama3
 
 # Descargamos el modelo NLTK de resuemn de noticias
-python -m $PROJECT_ROOT/scripts/descarga_resumidor_nltk.py
+python  $PROJECT_ROOT/scripts/descarga_resumidor_nltk.py
