@@ -19,7 +19,7 @@ from sumy.utils import get_stop_words
 language = "spanish"
 
 # Introducir esta variable de entorno en el lanzador
-os.environ['PROJECT_ROOT'] = r'/content/content/tfm-oepia'
+# os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
 
 # Abrir y leer el archivo YAML
 with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
