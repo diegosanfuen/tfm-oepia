@@ -141,14 +141,14 @@ class Utiles:
         """
         MARKDOWN = """
         ## Manejo de OEPIA:
-
+        
         ### Uso basico:
         Escribe frases que indiequen a OEPIA que quieres localizar como por ejemmplo:
-        - Buscame las ofertas de empleo público que tengan que ver con la profesión de arquitecto
-        - Localiza todas las ofertas de empleo público de médico y me las presentas en formato json indicando la url.
+        <pre>Buscame las ofertas de empleo público que tengan que ver con la profesión de arquitecto</pre>
+        <pre>Localiza todas las ofertas de empleo público de médico y me las presentas en formato json indicando la url.</pre>
         
-        ### Metafunciones
-        - <resetear_sesion>: Resetea a OEPIA es como si volviese a conocerte
-        - <ver_historial>: OEPIA te muestra todo lo que ha conversado contigo
+        ### Metafunciones:
+        - \<resetear_sesion\>: Resetea a OEPIA es como si volviese a conocerte
+        - \<ver_historial\>: OEPIA te muestra todo lo que ha conversado contigo
         """
         return MARKDOWN
