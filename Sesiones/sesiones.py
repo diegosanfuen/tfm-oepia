@@ -7,7 +7,7 @@ from pathlib import Path
 import datetime
 
 # Introducir esta variable de entorno en el lanzador
-os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
+# os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
 
 sys.path.insert(0, os.environ['PROJECT_ROOT'])
 

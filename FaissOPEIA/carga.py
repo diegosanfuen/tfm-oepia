@@ -6,10 +6,10 @@ from pathlib import Path
 import logging, os, datetime
 
 # Definimos variables de entorno necesarias
-os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-os.environ['PYTHONUNBUFFERED'] = '1'
-os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
+# os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
+# os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+# os.environ['PYTHONUNBUFFERED'] = '1'
+#os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
 
 # Ignorar warnings específicos de huggingface_hub
 warnings.filterwarnings("ignore", category=FutureWarning, module="huggingface_hub.file_download")

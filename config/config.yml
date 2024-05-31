@@ -49,7 +49,7 @@ scrapping:
       url: "https://bocyl.jcyl.es/"
       patron: "https://bocyl.jcyl.es/boletin.do?fechaBoletin=$dia/$mes/$anio#I.B._AUTORIDADES_Y_PERSONAL"
       fichero_csv: "csv_bocyls_oferta_publica.csv"
-    limitacion_descargas: 100
+    limitacion_descargas: 500
     tiempo_entre_descargas: 1
     separador: "|"
   headers:
@@ -70,4 +70,5 @@ llm_oepia:
 # Agentes
 agentePDF:
   ruta: "AgentePDF"
+  n_reintentos: 7
 
