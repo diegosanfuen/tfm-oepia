@@ -7,5 +7,5 @@ export KMP_DUPLICATE_LIB_OK=TRUE
 export PYTHONUNBUFFERED=1
 
 # Ejecutamos la secuencia principal del chatoboot
-python $$PROJECT_ROOT/ObtencionDatos/main.py
+python $PROJECT_ROOT/ObtencionDatos/main.py
 
