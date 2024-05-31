@@ -318,6 +318,10 @@ class DescargaBOE:
         MiObjeto = DescargaBOCyL
         MiObjeto.initialize_download()
         """
+        if config['scrapping']['enabled_scapping'] == 0:
+            logger.info("La descarga via webscrapping fue deshabilitada")
+            exit(0)
+
         i = 0
 
         while True:

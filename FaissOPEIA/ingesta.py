@@ -147,6 +147,10 @@ class ingesta():
         Inicializa la base de datos vectotrial a partir de los csv extraidos de la web
         :return:
         """
+        if config['vectorial_database']['enabled_ingest'] == 0:
+            logger.info("La ingesta de datos en la base de datos vectorial fue deshabilitada")
+            exit(0)
+
         path_csv = Path(config['ruta_base']) / config['scrapping']['ruta'] / config['scrapping'][
             'descarga_datos'] / '*.csv'
         path_csv_str = str(path_csv)

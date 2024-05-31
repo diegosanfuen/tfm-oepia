@@ -16,6 +16,7 @@ sesiones:
 
 # Configuracion de Base de Datos Vectorial
 vectorial_database:
+  enabled_ingest: 1
   ruta: "FaissOPEIA"
   serialized_database: "db"
   file_retriever: "retriever.pkl"
@@ -31,6 +32,7 @@ vectorial_database:
 
 # WebScrapping
 scrapping:
+  enabled_scapping: 0
   ruta: "ObtencionDatos"
   descarga_datos: "datos"
   dataset_index:
