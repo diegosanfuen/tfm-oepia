@@ -32,7 +32,7 @@ vectorial_database:
 
 # WebScrapping
 scrapping:
-  enabled_scapping: 0
+  enabled_scapping: 1
   ruta: "ObtencionDatos"
   descarga_datos: "datos"
   dataset_index:
