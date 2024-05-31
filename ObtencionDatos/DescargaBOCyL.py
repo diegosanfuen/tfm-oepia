@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-import datetime
+import datetime, sys
 import string
 from urllib.parse import urlparse, urlunparse
 import re
@@ -335,7 +335,7 @@ class DescargaBOCyL:
         """
         if config['scrapping']['enabled_scapping'] == 0:
             logger.info("La descarga via webscrapping fue deshabilitada")
-            exit(0)
+            sys.exit()
 
         i = 0
 
