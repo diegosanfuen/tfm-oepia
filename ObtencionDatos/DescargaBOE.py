@@ -70,9 +70,10 @@ class DescargaBOE:
         self.fecha_actual = datetime.datetime.now()
         self.url_patron = string.Template(config['scrapping']['fuentes']['BOE']['patron'])
         self.dominio = config['scrapping']['fuentes']['BOE']['url']
-        self.dataset_boes = pd.DataFrame({'url': [],
-                                          'titulo': [],
-                                          'texto': []})
+        self.dataset_boes = pd.DataFrame({'url':[],
+                                          'titulo':[],
+                                          'texto':[],
+                                          'resumen':[]})
         logger.info("-------------------------------------------------------------------------------------")
         logger.info("-----------------------------------OBTENCION DE DATOS BOCYL-----------------------------")
         logger.info("-------------------------------------------------------------------------------------")

@@ -73,7 +73,8 @@ class DescargaBOCyL:
         self.dominio = config['scrapping']['fuentes']['BOCYL']['url']
         self.dataset_bocyls = pd.DataFrame({'url': [],
                                             'titulo': [],
-                                            'texto': []})
+                                            'resumen': [],
+                                            })
         logger.info("-------------------------------------------------------------------------------------")
         logger.info("-----------------------------------OBTENCION DE DATOS BOCYL-----------------------------")
         logger.info("-------------------------------------------------------------------------------------")
