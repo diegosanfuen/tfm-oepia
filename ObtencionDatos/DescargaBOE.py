@@ -176,7 +176,7 @@ class DescargaBOE:
         parsed_url = urlparse(url)
 
         dominio = parsed_url.netloc
-        dominio = dominio[:-1]
+
 
         response = requests.get(url)
         html_content = response.content
