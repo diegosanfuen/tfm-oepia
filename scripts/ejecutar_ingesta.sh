@@ -9,3 +9,6 @@ export PYTHONUNBUFFERED=1
 # Ejecutamos la secuencia principal del chatoboot
 python $PROJECT_ROOT/ObtencionDatos/main.py
 
+# Ejecutamos el proceso de ingesta, esto consume unidades de GPUs
+python $PROJECT_ROOT/FaissOPEIA/ingesta.py
+
