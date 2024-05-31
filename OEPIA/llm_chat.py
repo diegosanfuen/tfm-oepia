@@ -255,9 +255,9 @@ agent = ReActAgent.from_llm_and_tools(
 agent_executor = AgentExecutor.from_agent_and_tools(
     agent=agent,
     tools=HERRAMIENTAS,
-    verbose=True,
+    verbose=False,
     handle_parsing_errors=True,
-    max_iterations=7,
+    max_iterations=3,
     return_messages=True,
 )
 
