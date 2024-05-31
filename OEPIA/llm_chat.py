@@ -262,7 +262,8 @@ agent_executor = AgentExecutor.from_agent_and_tools(
 )
 
 # Creamos el chain final
-llmApp = retrieval_chain | agent_executor
+# llmApp = retrieval_chain | agent_executor
+llmApp = agent_executor | retrieval_chain
 
 
 def chat(pregunta):
