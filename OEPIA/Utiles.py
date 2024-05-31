@@ -144,7 +144,7 @@ class Utiles:
         <pre>Localiza todas las ofertas de empleo en el ambito sanitario y me las presentas en formato json indicando la url.</pre>
         
         ### Metafunciones:
-        - \<resetear_sesion\>: Resetea a OEPIA es como si volviese a conocerte
-        - \<ver_historial\>: OEPIA te muestra todo lo que ha conversado contigo
+        <pre>@resetear_sesion: Resetea a OEPIA es como si volviese a conocerte</pre>
+        <pre>@ver_historial: OEPIA te muestra todo lo que ha conversado contigo</pre>
         """
         return MARKDOWN

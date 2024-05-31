@@ -286,11 +286,11 @@ def chat(pregunta):
 
     global token
     answer = "<h1>SE PRODUJO UN ERROR</h1>"
-    if ("<resetear_sesion>" in pregunta.lower()):
+    if ("@resetear_sesion" in pregunta.lower()):
         token = ses.generate_token()
         answer = "Sesión reseteada"
 
-    elif ("<ver_historial>" in pregunta.lower()):
+    elif ("@ver_historial" in pregunta.lower()):
         answer = sesiones.obtener_mensajes_por_sesion(token)
 
     elif ("usa el agente para" in pregunta.lower()):
