@@ -262,8 +262,8 @@ agent_executor = AgentExecutor.from_agent_and_tools(
 )
 
 # Creamos el chain final
-# llmApp = retrieval_chain | agent_executor
-llmApp = agent_executor | retrieval_chain
+llmApp = retrieval_chain | agent_executor
+# llmApp = agent_executor | retrieval_chain
 
 
 def chat(pregunta):
@@ -286,8 +286,8 @@ def chat(pregunta):
 
     global token
     answer = "<h1>SE PRODUJO UN ERROR</h1>"
-    if ("<resetea_sesion>" in pregunta.lower()):
-        token = generate_token()
+    if ("<resetear_sesion>" in pregunta.lower()):
+        token = ses.generate_token()
         answer = "Sesión reseteada"
 
     elif ("<ver_historial>" in pregunta.lower()):
