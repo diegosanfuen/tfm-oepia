@@ -146,5 +146,8 @@ class Utiles:
         ### Metafunciones:
         <pre>@resetear_sesion: Resetea a OEPIA es como si volviese a conocerte</pre>
         <pre>@ver_historial: OEPIA te muestra todo lo que ha conversado contigo</pre>
+        
+        ### Más información sobre el proyecto
+        [Portal RAG OEPIA](http://ragoepia.atwebpages.com/)
         """
         return MARKDOWN
