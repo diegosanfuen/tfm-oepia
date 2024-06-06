@@ -1,76 +1,76 @@
 # Ruta base
-ruta_base: "/content/tfm-oepia"
+ruta_base: "/content/tfm-oepia" # Ruta base del proyecto
 
 # Configuracion de los Logs
 logs_config:
-  ruta_salida_logs: "Logs"
-  format: "%(asctime)s - %(levelname)s - %(message)s"
-  level: "DEBUG"
+  ruta_salida_logs: "Logs" # Ruta de los logs partiendo de la Ruta base
+  format: "%(asctime)s - %(levelname)s - %(message)s" # Formato de logs
+  level: "DEBUG" # Modalidad de los logs
 
 # Configuracion de la Base de Datos de Mensajes (Contexto)
 sesiones:
-  ruta: "Sesiones"
-  ruta_db: "datos"
-  nombre_db: "sesiones.sqlite"
-  tabla: "sesiones"
+  ruta: "Sesiones" # Ruta despliegue módulo sesiones partiendo ruta base
+  ruta_db: "datos" # Ruta donde almacenar la base de datos de sesiones partiendo RutaBase+RutaSesiones
+  nombre_db: "sesiones.sqlite" # Nombre base de datos de sesiones
+  tabla: "sesiones" # Nombre tabla de sesiones
 
 # Configuracion de Base de Datos Vectorial
 vectorial_database:
-  enabled_ingest: 1
-  ruta: "FaissOPEIA"
-  serialized_database: "db"
-  file_retriever: "retriever.pkl"
-  file_vector_index: "bbdd_vecrtorial.pkl"
+  enabled_ingest: 1 # Habilitado: 1 Deshabilitado: 0
+  ruta: "FaissOPEIA" # Ruta despliegue Módulo base de datos vectorial RAG
+  serialized_database: "db" # Ruta almacenamiento datos serializados RAG partiendo RutaBase+RutaModuloRAG
+  file_retriever: "retriever.pkl" # Nombre del fichero de datos serializados Retriever
+  file_vector_index: "bbdd_vecrtorial.pkl" # Nombre del fichero datos serializados bbdd_vectorial
   parameters_tokenizador:
-    name_model_llm: llama3
-    name_model_tokenizador: llama3
-    return_tensors: pt
-    max_length: 512
-    truncation: true
-    padding: max_length
-    temperature: 0.0
+    name_model_llm: llama3 # Nombre modelo LLM general
+    name_model_tokenizador: llama3 # Nombre modelo LLM tokenizador
+    return_tensors: pt # Formato de tensor pt -> pytorch
+    max_length: 512 # Tamaño máximo de tokens a alamacenar por bloque
+    truncation: true # Truncado True <- SI
+    padding: max_length # Tipo de relleno: Tamaño máximo (max_length)
+    temperature: 0.0 # Temperatura: 0 -> No es creativa
 
 # WebScrapping
 scrapping:
-  enabled_scapping: 1
-  ruta: "ObtencionDatos"
-  descarga_datos: "datos"
+  enabled_scapping: 1 # 1: Habilitado 0: Deshabilitado
+  ruta: "ObtencionDatos" # Ruta de despliegue del modulo de WebScrapping
+  descarga_datos: "datos" # Ruta de almacenamiento de datos
   dataset_index:
-    campos_metadata:
+    campos_metadata: # Campos dataset metadata
       - url
       - titulo
       - texto
-    campo_texto:
+    campo_texto: # Campo dataset almacenar BBDD vectorial
       - resumen
   fuentes:
-    BOE:
+    BOE: # Datos fuente del BOE
       url: "https://www.boe.es/"
       patron: "https://www.boe.es/boe/dias/$anio/$mes/$dia/index.php?s=2B"
       fichero_csv: "csv_boes_oferta_publica.csv"
-    BOCYL:
+    BOCYL: # Datos fuente del BOCyL
       url: "https://bocyl.jcyl.es/"
       patron: "https://bocyl.jcyl.es/boletin.do?fechaBoletin=$dia/$mes/$anio#I.B._AUTORIDADES_Y_PERSONAL"
       fichero_csv: "csv_bocyls_oferta_publica.csv"
-    limitacion_descargas: 500
-    tiempo_entre_descargas: 1
-    separador: "|"
+    limitacion_descargas: 500 # Limitado de descargas
+    tiempo_entre_descargas: 1 # Establece un tiempo entre descargas para no saturar ka fuente
+    separador: "|" # Separador dentro del CVV generado
   headers:
-    accept: "application/xml;q=0.9, */*;q=0.8"
-  timeout: 10
-  n_sentences_summary: 4
+    accept: "application/xml;q=0.9, */*;q=0.8" # Cabeceras para el agente de webscrapping
+  timeout: 10 # Tiempo de vida de la sesion de scrapping
+  n_sentences_summary: 4 # Numero de frases del resumen
 
 
 # Modelo LLM principal
 llm_oepia:
   ruta: "OEPIA"
   parameters_modelo:
-    llm_model: llama3
-    temperature: 0.0
+    llm_model: llama3 # Modelo general para las respuestas del ChatBoot
+    temperature: 0.0 # 0.0 poco creativo
     nombre_asistente: "OPEIA"
 
 
 # Agentes
 agentePDF:
   ruta: "AgentePDF"
-  n_reintentos: 7
+  n_reintentos: 4 # Numero de intentos de ejecucion del agente (tiene que ver con la rapidez del chatBoot)
 
