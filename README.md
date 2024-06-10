@@ -1,4 +1,4 @@
-# OEPIA ![Logo](https://diegosanfuen.github.io/staticsTFM/logo/logo.png)
+<h1><img src="https://diegosanfuen.github.io/staticsTFM/logo/logo.png">OEPIA</h1> 
 Proyecto fin de master OEPIA
 
 ![Arquitecrtura de OEPIA](https://diegosanfuen.github.io/staticsTFM/sources/Arquitectura2.png)
@@ -34,3 +34,29 @@ El proyecto consta de los siguientes módulos:
 En el siguiente diagrama se muestra el despliegue de los distintos módulos que componen el proyecto:
 
 ![Esquema de despliegue](https://diegosanfuen.github.io/staticsTFM/sources/Despliegue%20Proyecto%20OEPIA.png)
+
+Manual de uso:
+
+Descarga de las librerias necesarias para la ejecución del proyecto:
+<pre>
+/scripts/instalar_requirements.sh
+</pre>
+
+Instalación del gestor de modelos de Ollama:
+<pre>
+/scripts/instalar_ollama.sh
+</pre>
+
+Ejecución del script de descarga de datos de las fuentes y carga de los mismos en la base de datos vecotorial:
+<pre>
+/scripts/ejecutar_ingesta.sh
+</pre>
+
+Ejecución del script del interfaz de OEPIA recomendable uso de GPU:
+<pre>
+/scripts/ejecutar_chat_opeia.sh
+</pre>
+
+![Descarga](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaBBDDVectorial.gif)
+![Inferencia](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaInferencia.gif)
+
