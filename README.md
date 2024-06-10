@@ -62,6 +62,9 @@ Fichero de configuración del proyecto OEPIA:
 /config/config.yml
 </pre>
 
+**WebScrapping, Descarga, Limpieza e Ingesta de los documentos en la Base de Datos Vectorial:**
 ![Descarga](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaBBDDVectorial.gif)
+
+**Interfaz del ChatBoot de OEPIA**
 ![Inferencia](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaInferencia.gif)
 
