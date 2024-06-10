@@ -57,6 +57,11 @@ Ejecución del script del interfaz de OEPIA recomendable uso de GPU:
 /scripts/ejecutar_chat_opeia.sh
 </pre>
 
+Fichero de configuración del proyecto OEPIA:
+<pre>
+/config/config.yml
+</pre>
+
 ![Descarga](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaBBDDVectorial.gif)
 ![Inferencia](https://diegosanfuen.github.io/staticsTFM/sources/EjemploCargaInferencia.gif)
 
