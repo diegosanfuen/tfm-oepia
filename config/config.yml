@@ -5,7 +5,7 @@ ruta_base: "/content/tfm-oepia" # Ruta base del proyecto
 logs_config:
   ruta_salida_logs: "Logs" # Ruta de los logs partiendo de la Ruta base
   format: "%(asctime)s - %(levelname)s - %(message)s" # Formato de logs
-  level: "DEBUG" # Modalidad de los logs
+  level: "INFO" # Modalidad de los logs
 
 # Configuracion de la Base de Datos de Mensajes (Contexto)
 sesiones:
