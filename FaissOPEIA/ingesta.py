@@ -9,6 +9,9 @@ import yaml
 from pathlib import Path
 import logging, glob, os, datetime
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer
 
 # Variables de entorno necesarias
 os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'

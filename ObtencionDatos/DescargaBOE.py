@@ -15,6 +15,10 @@ from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 
+from transformers import pipeline
+from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer
+
 # Idioma del texto
 language = "spanish"
 
@@ -118,28 +122,26 @@ class DescargaBOE:
         self.generar_resumen(texto)
         """
 
-        # Inicializar el parser
-        parser = PlaintextParser.from_string(texto, Tokenizer(self.language))
-        stemmer = Stemmer(self.language)
+        resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+        tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
 
-        # Inicializar el sumarizador
-        summarizer = Summarizer(stemmer)
-        summarizer.stop_words = get_stop_words(language)
+        # Tokenizar el texto
+        tokens = tokenizer(texto, return_tensors='pt', truncation=False, padding='longest').input_ids[0]
+        num_tokens = len(tokens)
 
-        try:
-            # Generar el resumen
-            summary = summarizer(parser.document, self.num_sentences)
-        except Exception as e:
-            logger.error(f"Hubo un problema al realizar el resumen {e}")
+        # Dividir el texto en fragmentos adecuados
+        chunks = [tokens[i:i + max_chunk_length] for i in range(0, num_tokens, max_chunk_length)]
 
-        texto_resumido = ""
-        for sentence in summary:
-            if texto_resumido == "":
-                texto_resumido = str(sentence)
-            else:
-                texto_resumido = texto_resumido + "\n" + str(sentence)
+        resumenes_parciales = []
+        for chunk in chunks:
+            # Decodificar tokens a texto
+            chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
+            # Resumir el fragmento
+            resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
+            resumenes_parciales.append(resumen[0]['summary_text'])
 
-        return texto_resumido
+        resumen_final = ' '.join(resumenes_parciales)
+        return resumen_final
 
     def establecer_offset(self, offset: int):
         """

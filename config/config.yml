@@ -39,9 +39,9 @@ scrapping:
     campos_metadata: # Campos dataset metadata
       - url
       - titulo
-      - resumen
-    campo_texto: # Campo dataset almacenar BBDD vectorial
       - texto
+    campo_texto: # Campo dataset almacenar BBDD vectorial
+      - resumen
   fuentes:
     BOE: # Datos fuente del BOE
       url: "https://www.boe.es/"
