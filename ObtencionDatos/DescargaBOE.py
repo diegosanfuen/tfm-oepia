@@ -114,10 +114,12 @@ class DescargaBOE:
         texto = re.sub('<.*?>', '', texto)
         return texto
 
-    def generar_resumen(self, texto: str) -> str:
+    def generar_resumen(self, texto: str,
+                        max_chunk_length=config["scrapping"]["max_chunk_length"]) -> str:
         """
         Genera un resumen del texto teniendo en cuenta la parametrizacion n_sentences_summary y lo devuelve como salida
         :param texto: Texto a resumir
+        :param max_chunk_length: tamaño maximo resumen
         :return: Texto resumido
         self.generar_resumen(texto)
         """

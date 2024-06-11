@@ -58,6 +58,7 @@ scrapping:
     accept: "application/xml;q=0.9, */*;q=0.8" # Cabeceras para el agente de webscrapping
   timeout: 10 # Tiempo de vida de la sesion de scrapping
   n_sentences_summary: 10 # Numero de frases del resumen
+  max_chunk_length: 512 # Tamaño maximo del resunen
 
 
 # Modelo LLM principal
