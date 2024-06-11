@@ -8,15 +8,10 @@ import re
 from pathlib import Path
 import logging, os, yaml, time
 
-# Continuar con el resto de tu código de sumy después de esta descarga
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer as Summarizer
-from sumy.nlp.stemmers import Stemmer
-from sumy.utils import get_stop_words
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 from transformers import pipeline
-from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer
 
 # Idioma del texto
