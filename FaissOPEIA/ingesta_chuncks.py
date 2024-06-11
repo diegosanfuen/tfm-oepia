@@ -1,3 +1,53 @@
+# Importamos librerias
+import pandas as pd
+from langchain_core.documents.base import Document
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
+import pickle as pkl
+import warnings
+import yaml
+from pathlib import Path
+import logging, glob, os, datetime
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# Variables de entorno necesarias
+os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+os.environ['PYTHONUNBUFFERED'] = '1'
+os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
+
+# Ignorar warnings específicos de huggingface_hub
+warnings.filterwarnings("ignore", category=FutureWarning, module="huggingface_hub.file_download")
+warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub.file_download")
+
+# Abrir y leer el archivo YAML
+with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
+    config = yaml.safe_load(file)
+
+PATH_BASE = Path(config['ruta_base'])
+date_today = datetime.datetime.today().strftime("%Y_%m_%d")
+
+# Configuración básica del logger
+log_level = None
+match config['logs_config']['level']:
+    case 'DEBUG':
+        log_level = logging.DEBUG
+    case 'WARN':
+        log_level = logging.WARNING
+    case 'WARNING':
+        log_level = logging.WARNING
+    case 'ERROR':
+        log_level = logging.ERROR
+    case _:
+        log_level = logging.INFO
+
+logging.basicConfig(filename=PATH_BASE / config['logs_config']['ruta_salida_logs'] / f'logs_{date_today}.log',
+                    level=log_level,
+                    format=config['logs_config']['format'])
+
+# Creamos el logger
+logger = logging.getLogger()
+
 class ingesta():
     """
        Clase que gestiona la ingesta de datos hacia la base de datos vectorial de FAISS.
