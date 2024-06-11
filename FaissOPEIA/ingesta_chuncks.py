@@ -1,62 +1,22 @@
-import numpy as np
-import faiss
-from collections import namedtuple
-import pandas as pd
-from langchain_core.documents.base import Document
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import FAISS
-import pickle as pkl
-import warnings
-import yaml
-from pathlib import Path
-import logging, glob, os, datetime
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+class ingesta():
+    """
+       Clase que gestiona la ingesta de datos hacia la base de datos vectorial de FAISS.
 
-# Variables de entorno necesarias
-os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-os.environ['PYTHONUNBUFFERED'] = '1'
-os.environ['PROJECT_ROOT'] = r'/content/tfm-oepia'
+       Esta clase está diseñada para crear y poblar una base de datos FAISS
+       utilizando datos vectoriales que se extraen de archivos CSV. Estos archivos
+       CSV son descargados y preparados por un módulo de obtención de datos externo.
 
-# Ignorar warnings específicos de huggingface_hub
-warnings.filterwarnings("ignore", category=FutureWarning, module="huggingface_hub.file_download")
-warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub.file_download")
+       Métodos:
+           convertir_pandas_lista_documentos(self, dataframe, col_text, cols_metadata):
+           Convierte los pandas dataframes obtenidos a partir de los CSVs en documentos
+           generar_vector_store(self): Genera los vectores con los documentos
+           persistir_bbdd_vectorial(self,): persiste la base de datos vectorial en disco
+           inicialize_db_vect(self,): Inicia todos los procesos en su orden
+           getRetriver(self,): Obtiene el Retreiver para probarlo
 
-# Definición de la estructura del documento
-Document = namedtuple('Document', ['page_content', 'metadata'])
+    """
 
-
-# Abrir y leer el archivo YAML
-with open(Path(os.getenv('PROJECT_ROOT')) / 'config/config.yml', 'r') as file:
-    config = yaml.safe_load(file)
-
-PATH_BASE = Path(config['ruta_base'])
-date_today = datetime.datetime.today().strftime("%Y_%m_%d")
-
-# Configuración básica del logger
-log_level = None
-match config['logs_config']['level']:
-    case 'DEBUG':
-        log_level = logging.DEBUG
-    case 'WARN':
-        log_level = logging.WARNING
-    case 'WARNING':
-        log_level = logging.WARNING
-    case 'ERROR':
-        log_level = logging.ERROR
-    case _:
-        log_level = logging.INFO
-
-logging.basicConfig(filename=PATH_BASE / config['logs_config']['ruta_salida_logs'] / f'logs_{date_today}.log',
-                    level=log_level,
-                    format=config['logs_config']['format'])
-
-# Creamos el logger
-logger = logging.getLogger()
-
-class DocumentProcessor:
     def __init__(self):
-        self.documentos = []
         logger.debug(f'Volcamos toda la informacion del fichero de configuracion: {config}')
         # Parametros externos configuracion
         self.embedding_llm = OllamaEmbeddings(
@@ -65,13 +25,15 @@ class DocumentProcessor:
             config['vectorial_database']['serialized_database'])
         logger.debug(f'Leemos la configuracion Ruta de la Base de datos: {self.ruta_db}')
 
-    def convertir_csv_a_documentos(self, dataframe, col_text, cols_metadata):
+    def convertir_pandas_lista_documentos(self, dataframe: pd,
+                                          col_text: str,
+                                          cols_metadata: list):
         """
         Convierte en documentos todos los csvs extraidos a través del webscrapping de las distintas fuentes.
         :param dataframe: Dataframe (csvs leidos)
         :param col_text: Campo a indexar
         :param cols_metadata: Campos a la METADATA
-        :return: Lista de documentos
+        :return:
         """
         documentos = []
         # Iterar sobre cada fila del DataFrame
@@ -79,63 +41,33 @@ class DocumentProcessor:
             # Crear un objeto Document
             doc = Document(
                 page_content=row[col_text],  # El contenido principal del documento
-                metadata={campo: row[campo] for campo in cols_metadata}
+                metadata={
+                    campo: row[campo] for campo in cols_metadata
+                }
             )
             # Añadir el Documento a la lista
             documentos.append(doc)
         self.documentos = documentos
-        return documentos
-
-    def dividir_en_chunks_con_overlap(self, documentos, chunk_size, overlap_size):
-        """
-        Divide la lista de documentos en chunks con solapamiento.
-        :param documentos: Lista de documentos
-        :param chunk_size: Tamaño del chunk
-        :param overlap_size: Tamaño del solapamiento
-        :return: Lista de chunks
-        """
-        chunks = []
-        for i in range(0, len(documentos), chunk_size - overlap_size):
-            end = min(i + chunk_size, len(documentos))
-            chunk = documentos[i:end]
-            chunks.append(chunk)
-        return chunks
-
-    def indexar_chunks(self, chunks, dimension):
-        """
-        Indexa cada chunk utilizando Faiss.
-        :param chunks: Lista de chunks
-        :param dimension: Dimensión de los vectores
-        :return: Lista de índices
-        """
-        indices = []
-        for chunk in chunks:
-            # Supongamos que transformamos los documentos en vectores de alguna manera
-            vectors = np.array([self.transformar_documento_a_vector(doc) for doc in chunk]).astype('float32')
-            index = faiss.IndexFlatL2(dimension)  # Indexación usando L2
-            index.add(vectors)
-            indices.append(index)
-        return indices
-
-    def transformar_documento_a_vector(self, doc):
-        """
-        Transforma un documento en un vector.
-        Aquí se debe definir cómo transformar el texto en vectores (e.g., usando embeddings).
-        :param doc: Documento a transformar
-        :return: Vector del documento
-        """
-        # Ejemplo simple: convertir el contenido a un vector de longitud fija
-        vector = np.random.rand(64)  # Placeholder, usar un método real de conversión a vector
-        return vector
 
     def generar_vector_store(self):
         """
-        Gener los vectores usando el LLM configurado en el fichero config.xml
+        Genera los vectores usando el LLM configurado en el fichero config.yml
         :return:
         """
-        text_splitter = RecursiveCharacterTextSplitter()
-        documents_embd = text_splitter.split_documents(self.documentos)
-        self.vector_index = FAISS.from_documents(documents_embd, self.embedding_llm)
+        # Configurar el splitter con chunk_size y overlap_size
+        chunk_size = 1000  # Tamaño de cada chunk
+        overlap_size = 200  # Tamaño del solapamiento
+
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=overlap_size
+        )
+
+        # Dividir documentos en chunks
+        documents_chunks = text_splitter.split_documents(self.documentos)
+
+        # Generar la base de datos vectorial con FAISS
+        self.vector_index = FAISS.from_documents(documents_chunks, self.embedding_llm)
         self.retriever = self.vector_index.as_retriever()
 
     def persistir_bbdd_vectorial(self):
@@ -204,22 +136,11 @@ class DocumentProcessor:
         """
         return self.retriever
 
+
 if __name__ == '__main__':
     """
     Método principal para probar la clase.
     """
-    #BDVect = ingesta()
-    #BDVect.inicialize_db_vect()
-    #retriever = BDVect.getRetriver()
-
-    # Ejemplo de uso:
-    df = pd.read_csv('/content/tfm-oepia/ObtencionDatos/datos/csv_boes_oferta_publica.csv', sep='|')  # Leer un CSV como DataFrame
-    col_text = 'texto'  # Columna del texto principal
-    cols_metadata = ['url', 'titulo']  # Columnas de metadata
-
-    processor = DocumentProcessor()
-    documentos = processor.convertir_csv_a_documentos(df, col_text, cols_metadata)
-    chunks = processor.dividir_en_chunks_con_overlap(documentos, chunk_size=100, overlap_size=10)
-    indices = processor.indexar_chunks(chunks, dimension=64)
-
-    # Ahora tienes tus documentos divididos en chunks con solapamiento y cada chunk indexado con Faiss
+    BDVect = ingesta()
+    BDVect.inicialize_db_vect()
+    retriever = BDVect.getRetriver()
