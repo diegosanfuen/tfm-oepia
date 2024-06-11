@@ -111,36 +111,47 @@ class DescargaBOCyL:
         texto = re.sub('<.*?>', '', texto)
         return texto
 
-    def generar_resumen(self, texto: str) -> str:
+    def generar_resumen(self, texto: str,
+                        max_chunk_length=config["scrapping"]["max_chunk_length"]) -> str:
         """
         Genera un resumen del texto teniendo en cuenta la parametrizacion n_sentences_summary y lo devuelve como salida
         :param texto: Texto a resumir
+        :param max_chunk_length: tamaño maximo resumen
         :return: Texto resumido
         self.generar_resumen(texto)
         """
 
-        # Inicializar el parser
-        parser = PlaintextParser.from_string(texto, Tokenizer(self.language))
-        stemmer = Stemmer(self.language)
-
-        # Inicializar el sumarizador
-        summarizer = Summarizer(stemmer)
-        summarizer.stop_words = get_stop_words(language)
-
         try:
-            # Generar el resumen
-            summary = summarizer(parser.document, self.num_sentences)
+            resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+            tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
         except Exception as e:
-            logger.error(f"Hubo un problema al realizar el resumen {e}")
+            logging.ERROR(f"Error al descargar modelo resumen {e}")
 
-        texto_resumido = ""
-        for sentence in summary:
-            if texto_resumido == "":
-                texto_resumido = str(sentence)
-            else:
-                texto_resumido = texto_resumido + "\n" + str(sentence)
+        # Tokenizar el texto
+        tokens = tokenizer(texto, return_tensors='pt', truncation=False, padding='longest').input_ids[0]
+        num_tokens = len(tokens)
 
-        return texto_resumido
+        # Dividir el texto en fragmentos adecuados
+        chunks = [tokens[i:i + max_chunk_length] for i in range(0, num_tokens, max_chunk_length)]
+
+        resumenes_parciales = []
+        for chunk in chunks:
+            # Decodificar tokens a texto
+            try:
+                chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
+            except Exception as e:
+                logging.ERROR(f"Error al tokenizar el texto {e}")
+
+            # Resumir el fragmento
+
+            try:
+                resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
+                resumenes_parciales.append(resumen[0]['summary_text'])
+            except Exception as e:
+                logging.ERROR(f"Error al gener los resumentes {e}")
+
+        resumen_final = ' '.join(resumenes_parciales)
+        return resumen_final
 
     def establecer_offset(self, offset: int):
         """

@@ -119,8 +119,11 @@ class DescargaBOE:
         self.generar_resumen(texto)
         """
 
-        resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-        tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
+        try:
+            resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+            tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
+        except Exception as e:
+            logging.ERROR(f"Error al descargar modelo resumen {e}")
 
         # Tokenizar el texto
         tokens = tokenizer(texto, return_tensors='pt', truncation=False, padding='longest').input_ids[0]
@@ -132,10 +135,18 @@ class DescargaBOE:
         resumenes_parciales = []
         for chunk in chunks:
             # Decodificar tokens a texto
-            chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
+            try:
+                chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
+            except Exception as e:
+                logging.ERROR(f"Error al tokenizar el texto {e}")
+
             # Resumir el fragmento
-            resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
-            resumenes_parciales.append(resumen[0]['summary_text'])
+
+            try:
+                resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
+                resumenes_parciales.append(resumen[0]['summary_text'])
+            except Exception as e:
+                logging.ERROR(f"Error al gener los resumentes {e}")
 
         resumen_final = ' '.join(resumenes_parciales)
         return resumen_final
