@@ -51,13 +51,13 @@ scrapping:
       url: "https://bocyl.jcyl.es/"
       patron: "https://bocyl.jcyl.es/boletin.do?fechaBoletin=$dia/$mes/$anio#I.B._AUTORIDADES_Y_PERSONAL"
       fichero_csv: "csv_bocyls_oferta_publica.csv"
-    limitacion_descargas: 500 # Limitado de descargas
+    limitacion_descargas: 50 # Limitado de descargas
     tiempo_entre_descargas: 1 # Establece un tiempo entre descargas para no saturar ka fuente
     separador: "|" # Separador dentro del CVV generado
   headers:
     accept: "application/xml;q=0.9, */*;q=0.8" # Cabeceras para el agente de webscrapping
   timeout: 10 # Tiempo de vida de la sesion de scrapping
-  n_sentences_summary: 4 # Numero de frases del resumen
+  n_sentences_summary: 10 # Numero de frases del resumen
 
 
 # Modelo LLM principal
