@@ -7,6 +7,7 @@ from urllib.parse import urlparse, urlunparse
 import re
 from pathlib import Path
 import logging, os, yaml, time
+import torch
 
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -122,6 +123,13 @@ class DescargaBOCyL:
 
         try:
             resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+
+            # Configurar el dispositivo (0 para la primera GPU, -1 para la CPU)
+            device = 0 if torch.cuda.is_available() else -1
+
+            # Mover el modelo a la GPU
+            resumen_pipeline.model.to(device)
+
             tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
         except Exception as e:
             logging.ERROR(f"Error al descargar modelo resumen {e}")
