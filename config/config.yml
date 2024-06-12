@@ -38,7 +38,6 @@ scrapping:
   dataset_index:
     campos_metadata: # Campos dataset metadata
       - url
-      - titulo
     campo_texto: # Campo dataset almacenar BBDD vectorial
       - resumen
   fuentes:
