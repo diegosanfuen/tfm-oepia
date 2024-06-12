@@ -161,6 +161,21 @@ class DescargaBOCyL:
         resumen_final = ' '.join(resumenes_parciales)
         return resumen_final
 
+    def generar_recorte(self, texto: str,
+                        max_chunk_length=config["scrapping"]["max_chunk_length"]) -> str:
+        """
+        Genera un recorte del texto teniendo en cuenta la parametrizacion max_chunk_length y lo devuelve como salida
+        :param texto: Texto a resumir
+        :param max_chunk_length: tamaño maximo resumen
+        :return: Texto resumido
+        self.generar_resumen(texto)
+        """
+        if max_chunk_length > len(texto):
+            return texto
+
+        return texto[:max_chunk_length]
+
+
     def establecer_offset(self, offset: int):
         """
         Método que estalece el OFFSET definido como el número de días a partir de la fecha
@@ -317,7 +332,7 @@ class DescargaBOCyL:
                                           'texto': self.lista_textos})
 
         dataset_capturado['texto'] = dataset_capturado['texto'].apply(self.quitar_etiquetas_html)
-        dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_resumen)
+        dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_recorte)
         texto_separador = "\nURL: "
         dataset_capturado['resumen'] = dataset_capturado.apply(
             lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
