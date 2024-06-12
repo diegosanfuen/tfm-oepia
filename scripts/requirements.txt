@@ -10,4 +10,3 @@ gradio_client==0.17.0
 langchainhub==0.1.17
 pdfplumber==0.11.0
 sumy==0.11.0
-sentence-transformers==2.6.1

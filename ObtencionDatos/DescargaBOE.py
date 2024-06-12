@@ -7,14 +7,13 @@ from urllib.parse import urlparse, urlunparse
 import re
 from pathlib import Path
 import logging, os, yaml, time
-import torch
-import datetime
 
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-
-from transformers import pipeline
-from transformers import AutoTokenizer
+# Continuar con el resto de tu código de sumy después de esta descarga
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer as Summarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
 
 # Idioma del texto
 language = "spanish"
@@ -111,67 +110,36 @@ class DescargaBOE:
         texto = re.sub('<.*?>', '', texto)
         return texto
 
-    def generar_resumen(self, texto: str,
-                        max_chunk_length=config["scrapping"]["max_chunk_length"]) -> str:
+    def generar_resumen(self, texto: str) -> str:
         """
-        Genera un resumen del texto teniendo en cuenta la parametrizacion max_chunk_length y lo devuelve como salida
+        Genera un resumen del texto teniendo en cuenta la parametrizacion n_sentences_summary y lo devuelve como salida
         :param texto: Texto a resumir
-        :param max_chunk_length: tamaño maximo resumen
         :return: Texto resumido
         self.generar_resumen(texto)
         """
+
+        # Inicializar el parser
+        parser = PlaintextParser.from_string(texto, Tokenizer(self.language))
+        stemmer = Stemmer(self.language)
+
+        # Inicializar el sumarizador
+        summarizer = Summarizer(stemmer)
+        summarizer.stop_words = get_stop_words(language)
 
         try:
-            # Configurar el dispositivo (0 para la primera GPU, -1 para la CPU)
-            device = 0 if torch.cuda.is_available() else -1
-
-            resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=device)
-
-            tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
+            # Generar el resumen
+            summary = summarizer(parser.document, self.num_sentences)
         except Exception as e:
-            logging.ERROR(f"Error al inicializar el modelo resumidor: {e}")
-            sys.exit(1)
+            logger.error(f"Hubo un problema al realizar el resumen {e}")
 
-        # Tokenizar el texto
-        tokens = tokenizer(texto, return_tensors='pt', truncation=False, padding='longest').input_ids[0]
+        texto_resumido = ""
+        for sentence in summary:
+            if texto_resumido == "":
+                texto_resumido = str(sentence)
+            else:
+                texto_resumido = texto_resumido + "\n" + str(sentence)
 
-        # Dividir el texto en fragmentos adecuados
-        num_tokens = len(tokens)
-        chunks = [tokens[i:i + max_chunk_length] for i in range(0, num_tokens, max_chunk_length)]
-
-        resumenes_parciales = []
-        for chunk in chunks:
-            chunk = chunk.to(device)  # Asegurarse de que el chunk esté en el dispositivo correcto
-            # Decodificar tokens a texto
-            try:
-                chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
-            except Exception as e:
-                logging.ERROR(f"Error al decodificar tokens: {e}")
-                continue
-
-            # Resumir el fragmento
-            try:
-                resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
-                resumenes_parciales.append(resumen[0]['summary_text'])
-            except Exception as e:
-                logging.ERROR(f"Error al resumir el fragmento: {e}")
-
-        resumen_final = ' '.join(resumenes_parciales)
-        return resumen_final
-
-    def generar_recorte(self, texto: str,
-                        max_chunk_length=config["scrapping"]["max_chunk_length"]) -> str:
-        """
-        Genera un recorte del texto teniendo en cuenta la parametrizacion max_chunk_length y lo devuelve como salida
-        :param texto: Texto a resumir
-        :param max_chunk_length: tamaño maximo resumen
-        :return: Texto resumido
-        self.generar_resumen(texto)
-        """
-        if max_chunk_length > len(texto):
-            return texto
-
-        return texto[:max_chunk_length]
+        return texto_resumido
 
 
     def establecer_offset(self, offset: int):
@@ -300,6 +268,12 @@ class DescargaBOE:
 
     def dividir_texto_en_chunks(self, texto,
                                 longitud_chunk=config["scrapping"]["max_chunk_length"]):
+        """
+        Divide el dataset en chunks de tamaño resumen longitud_chunk, para la ingesta por FAISS
+        :param texto: Texto a dividir
+        :param longitud_chunk: Tamaño del chunk
+        :return: Vector con los Chunks
+        """
         return [texto[i:i + longitud_chunk] for i in range(0, len(texto), longitud_chunk)]
 
     def generar_dataset(self) -> int:
