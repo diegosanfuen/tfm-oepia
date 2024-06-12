@@ -32,7 +32,7 @@ vectorial_database:
 
 # WebScrapping
 scrapping:
-  enabled_scapping: 1 # 1: Habilitado 0: Deshabilitado
+  enabled_scapping: 0 # 1: Habilitado 0: Deshabilitado
   ruta: "ObtencionDatos" # Ruta de despliegue del modulo de WebScrapping
   descarga_datos: "datos" # Ruta de almacenamiento de datos
   dataset_index:
