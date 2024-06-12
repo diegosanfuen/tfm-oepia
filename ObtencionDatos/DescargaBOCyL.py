@@ -313,6 +313,10 @@ class DescargaBOCyL:
             lista_urls_pdf.append(f'{self.dominio}{str(self.quitar_etiquetas_html(str(url_pdf)))}')
         self.lista_urls_pdf = lista_urls_pdf
 
+    def dividir_texto_en_chunks(self, texto,
+                                longitud_chunk=config["scrapping"]["max_chunk_length"]):
+        return [texto[i:i + longitud_chunk] for i in range(0, len(texto), longitud_chunk)]
+
     def generar_dataset(self) -> int:
         """
         Con los parámetros obtenidos de establecer_offset, generamos el dataset pandas
@@ -332,7 +336,17 @@ class DescargaBOCyL:
                                           'texto': self.lista_textos})
 
         dataset_capturado['texto'] = dataset_capturado['texto'].apply(self.quitar_etiquetas_html)
-        dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_recorte)
+        # dataset_capturado['resumenW'] = dataset_capturado['texto'].apply(self.generar_recorte)
+
+        filas_expandidas = []
+        for index, row in dataset_capturado.iterrows():
+            chunks = self.dividir_texto_en_chunks(row['texto'])
+            for chunk in chunks:
+                nueva_fila = row.to_dict()
+                nueva_fila['resumenW'] = chunk
+                filas_expandidas.append(nueva_fila)
+
+        dataset_capturado = pd.DataFrame(filas_expandidas)
         texto_separador = "\nURL: "
         dataset_capturado['resumen'] = dataset_capturado.apply(
             lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
