@@ -25,7 +25,7 @@ vectorial_database:
     name_model_llm: llama3 # Nombre modelo LLM general
     name_model_tokenizador: llama3 # Nombre modelo LLM tokenizador
     return_tensors: pt # Formato de tensor pt -> pytorch
-    max_length: 512 # Tamaño máximo de tokens a alamacenar por bloque
+    max_length: 1024 # Tamaño máximo de tokens a alamacenar por bloque
     truncation: true # Truncado True <- SI
     padding: max_length # Tipo de relleno: Tamaño máximo (max_length)
     temperature: 0.0 # Temperatura: 0 -> No es creativa

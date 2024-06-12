@@ -121,40 +121,39 @@ class DescargaBOE:
         """
 
         try:
-            resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-
             # Configurar el dispositivo (0 para la primera GPU, -1 para la CPU)
             device = 0 if torch.cuda.is_available() else -1
 
-            # Mover el modelo a la GPU
-            resumen_pipeline.model.to(device)
+            resumen_pipeline = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=device)
 
             tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
         except Exception as e:
-            logging.ERROR(f"Error al descargar modelo resumen {e}")
+            logging.ERROR(f"Error al inicializar el modelo resumidor: {e}")
+            sys.exit(1)
 
         # Tokenizar el texto
         tokens = tokenizer(texto, return_tensors='pt', truncation=False, padding='longest').input_ids[0]
-        num_tokens = len(tokens)
 
         # Dividir el texto en fragmentos adecuados
+        num_tokens = len(tokens)
         chunks = [tokens[i:i + max_chunk_length] for i in range(0, num_tokens, max_chunk_length)]
 
         resumenes_parciales = []
         for chunk in chunks:
+            chunk = chunk.to(device)  # Asegurarse de que el chunk esté en el dispositivo correcto
             # Decodificar tokens a texto
             try:
                 chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
             except Exception as e:
-                logging.ERROR(f"Error al tokenizar el texto {e}")
+                logging.ERROR(f"Error al decodificar tokens: {e}")
+                continue
 
             # Resumir el fragmento
-
             try:
                 resumen = resumen_pipeline(chunk_text, max_length=150, min_length=30, do_sample=False)
                 resumenes_parciales.append(resumen[0]['summary_text'])
             except Exception as e:
-                logging.ERROR(f"Error al gener los resumentes {e}")
+                logging.ERROR(f"Error al resumir el fragmento: {e}")
 
         resumen_final = ' '.join(resumenes_parciales)
         return resumen_final
