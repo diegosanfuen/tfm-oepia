@@ -309,6 +309,8 @@ class DescargaBOE:
         dataset_capturado['resumen'] = dataset_capturado.apply(
             lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
         dataset_capturado.drop('resumenW', axis=1, inplace=True)
+        dataset_capturado.drop('texto', axis=1, inplace=True)
+        dataset_capturado['texto'] = ['' for i in range(len(dataset_capturado))]
 
         self.dataset_boes = pd.concat([self.dataset_boes, dataset_capturado], ignore_index=True)
         return self.dataset_boes.shape[0]
