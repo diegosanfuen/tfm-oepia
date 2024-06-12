@@ -356,7 +356,7 @@ class DescargaBOCyL:
         """
         fecha_actual = datetime.datetime.now()
         sufijo_fecha = fecha_actual.strftime("%Y%m%d")
-        self.dataset_boes.to_csv(
+        self.dataset_bocyls.to_csv(
             f'{directorio_proyecto}/{self.folder_paquete}/{self.folder_data}/{self.name_file_output}_{sufijo_fecha}.csv',
             sep=self.separator_name)
 
