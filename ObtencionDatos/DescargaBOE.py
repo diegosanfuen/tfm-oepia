@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 import logging, os, yaml, time
 import torch
+import datetime
 
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -322,8 +323,10 @@ class DescargaBOE:
         Guarda en formato CSV en la ruta indicada en el fichero de configuracion
         MiClase.guardar_dataset_final()
         """
+        fecha_actual = datetime.datetime.now()
+        sufijo_fecha = fecha_actual.strftime("%Y%m%d")
         self.dataset_boes.to_csv(
-            f'{directorio_proyecto}/{self.folder_paquete}/{self.folder_data}/{self.name_file_output}',
+            f'{directorio_proyecto}/{self.folder_paquete}/{self.folder_data}/{self.name_file_output}_{sufijo_fecha}.csv',
             sep=self.separator_name)
 
     def initialize_download(self):

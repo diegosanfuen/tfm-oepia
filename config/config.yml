@@ -32,7 +32,7 @@ vectorial_database:
 
 # WebScrapping
 scrapping:
-  enabled_scapping: 0 # 1: Habilitado 0: Deshabilitado
+  enabled_scapping: 1 # 1: Habilitado 0: Deshabilitado
   ruta: "ObtencionDatos" # Ruta de despliegue del modulo de WebScrapping
   descarga_datos: "datos" # Ruta de almacenamiento de datos
   dataset_index:
@@ -46,11 +46,11 @@ scrapping:
     BOE: # Datos fuente del BOE
       url: "https://www.boe.es/"
       patron: "https://www.boe.es/boe/dias/$anio/$mes/$dia/index.php?s=2B"
-      fichero_csv: "csv_boes_oferta_publica.csv"
+      fichero_csv: "csv_boes_oferta_publica"
     BOCYL: # Datos fuente del BOCyL
       url: "https://bocyl.jcyl.es/"
       patron: "https://bocyl.jcyl.es/boletin.do?fechaBoletin=$dia/$mes/$anio#I.B._AUTORIDADES_Y_PERSONAL"
-      fichero_csv: "csv_bocyls_oferta_publica.csv"
+      fichero_csv: "csv_bocyls_oferta_publica"
     limitacion_descargas: 10 # Limitado de descargas
     tiempo_entre_descargas: 1 # Establece un tiempo entre descargas para no saturar ka fuente
     separador: "|" # Separador dentro del CVV generado
