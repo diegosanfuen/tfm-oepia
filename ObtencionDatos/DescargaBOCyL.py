@@ -73,6 +73,7 @@ class DescargaBOCyL:
         self.dominio = config['scrapping']['fuentes']['BOCYL']['url']
         self.dataset_bocyls = pd.DataFrame({'url': [],
                                             'titulo': [],
+                                            'texto': [],
                                             'resumen': [],
                                             })
         logger.info("-------------------------------------------------------------------------------------")
@@ -316,10 +317,19 @@ class DescargaBOCyL:
 
         dataset_capturado = pd.DataFrame(filas_expandidas)
         texto_separador = "\nURL: "
-        dataset_capturado['resumen'] = dataset_capturado.apply(
-            lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
-        dataset_capturado.drop('resumenW', axis=1, inplace=True)
-        dataset_capturado['texto'] = ['' for i in range(len(dataset_capturado))]
+        try:
+            dataset_capturado['resumen'] = dataset_capturado.apply(
+                lambda row: f"{row['resumenW']}{texto_separador}{row['url']}", axis=1)
+            dataset_capturado.drop('resumenW', axis=1, inplace=True)
+            dataset_capturado['texto'] = ['' for i in range(len(dataset_capturado))]
+        except Exception as e:
+            logger.error(f"No existen BOCyLs para el día de hoy {e}")
+            dataset_capturado = pd.DataFrame({'url': [],
+                                              'titulo': [],
+                                              'texto': [],
+                                              'resumen': [],
+                                            })
+
 
         self.dataset_bocyls = pd.concat([self.dataset_bocyls, dataset_capturado], ignore_index=True)
         return self.dataset_bocyls.shape[0]
