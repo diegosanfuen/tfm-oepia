@@ -1,0 +1,1 @@
+Este directorio debe de estar creado para almacenar los Logs

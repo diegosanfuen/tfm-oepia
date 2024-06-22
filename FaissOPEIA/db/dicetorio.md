@@ -1,0 +1,1 @@
+Este directorio debe de estar creado para almacenar las Bases de Datos de Embbedings serializadas
